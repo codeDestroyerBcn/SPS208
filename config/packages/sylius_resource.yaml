@@ -1,0 +1,9 @@
+sylius_resource:
+  resources:
+    tapir.tag:
+      driver: doctrine/orm
+      classes:
+        model: App\Entity\Tag\Tag
+        interface: App\Entity\Tag\TagInterface
+        form: App\Component\Tag\Form\Type\TagType
+        repository: App\Repository\Tag\TagRepository

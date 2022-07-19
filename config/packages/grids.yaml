@@ -1,0 +1,20 @@
+sylius_grid:
+    grids:
+        tapir_admin_tag:
+            driver:
+                name: doctrine/orm
+                options:
+                    class: App\Entity\Tag\Tag
+            fields:
+                code:
+                    type: string
+                    label: sylius.ui.code
+            actions:
+                main:
+                    create:
+                        type: create
+                item:
+                    update:
+                        type: update
+                    delete:
+                        type: delete

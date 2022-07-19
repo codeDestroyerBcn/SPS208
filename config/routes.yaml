@@ -1,2 +1,61 @@
 sylius_paypal_webhook:
     resource: "@SyliusPayPalPlugin/Resources/config/webhook_routing.yaml"
+
+tapir_admin_ajax_product_by_code_phrase:
+    path: /admin/ajax/products/search-by-code
+    methods: [GET]
+    defaults:
+        _controller: sylius.controller.product:indexAction
+        _format: json
+        _sylius:
+            serialization_groups: [Autocomplete]
+            permission: true
+            repository:
+                method: findByCodePart
+                arguments:
+                    phrase: $phrase
+                    limit: 25
+
+tapir_admin_ajax_tag_by_code_part:
+    path: /admin/tags/search
+    methods: [GET]
+    defaults:
+        _controller: tapir.controller.tag:indexAction
+        _format: json
+        _sylius:
+            serialization_groups: [Default]
+            permission: true
+            repository:
+                method: findByCodePart
+                arguments:
+                    phrase: $phrase
+                    limit: 25
+
+tapir_admin_ajax_tag_by_code:
+    path: /admin/tags/code
+    methods: [GET]
+    defaults:
+        _controller: tapir.controller.tag:indexAction
+        _format: json
+        _sylius:
+            serialization_groups: [Default]
+            permission: true
+            repository:
+                method: findBy
+                arguments: [code: $code]
+
+tapir_admin_tag:
+    resource: |
+        alias: tapir.tag
+        section: admin
+        path: admin/tags
+        templates: "@SyliusAdmin\\Crud"
+        redirect: index
+        grid: tapir_admin_tag
+        vars:
+            all:
+                subheader: tapir.ui.tag
+            index:
+                icon: 'tags'
+    type: sylius.resource
+

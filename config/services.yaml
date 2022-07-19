@@ -26,10 +26,42 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/*'
-        exclude: '../src/{Entity,Migrations,Tests,Kernel.php}'
+        exclude: '../src/{Entity,Migrations,Tests,Kernel.php,Component}'
 
     # Controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+
+    tapir.custom_factory.tag:
+        class: App\Component\Tag\Factory\TagFactory
+        decorates: tapir.factory.tag
+        arguments: [ '@tapir.custom_factory.tag.inner' ]
+
+    App\Component\Tag\Form\Type\TagType:
+        class: App\Component\Tag\Form\Type\TagType
+        arguments:
+            - '%tapir.model.tag.class%'
+            - ['sylius']
+        tags: [ 'form.type' ]
+
+    tapir.promotion.form.type.tag_autocomplete_choice:
+        class: App\Component\Tag\Form\Type\TagAutocompleteChoiceType
+        tags: [ 'form.type' ]
+
+    tapir.tag.event_subscriber.tag_autocomplete_subscriber:
+        class: App\Component\Tag\EventSubscriber\TagAutocompleteFormEventSubscriber
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@tapir.factory.tag'
+            - '@tapir.repository.tag'
+            - '@translator'
+
+    App\Component\CatalogPromotion\Form\Extension\Action\PercentageDiscountActionConfigurationTypeExtension:
+        class: App\Component\CatalogPromotion\Form\Extension\Action\PercentageDiscountActionConfigurationTypeExtension
+        tags: [ 'form.type_extension' ]
+
+    App\Component\CatalogPromotion\Form\Type\Action\CatalogPromotionFilterCollectionType:
+        class: App\Component\CatalogPromotion\Form\Type\Action\CatalogPromotionFilterCollectionType
+        tags: [ 'form.type' ]

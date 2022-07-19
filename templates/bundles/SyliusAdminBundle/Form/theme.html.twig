@@ -1,0 +1,5 @@
+{% extends '@SyliusUi/Form/theme.html.twig' %}
+
+{% block tapir_tag_autocomplete_choice_row %}
+    {{ form_row(form, {'remote_url': path('tapir_admin_ajax_tag_by_code_part'), 'load_edit_url': path('tapir_admin_ajax_tag_by_code')}) }}
+{% endblock %}
